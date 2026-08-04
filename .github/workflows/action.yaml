@@ -10,6 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Validate PR fields
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: node src/validate.js
 
   update-history:
