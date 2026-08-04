@@ -1,0 +1,21 @@
+name: BC-Because
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, closed]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate PR fields
+        run: node src/validate.js
+
+  update-history:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update history
+        run: node src/update_history.js
