@@ -24,10 +24,9 @@ for (const line of lines) {
 Object.keys(sections).forEach(k => sections[k] = sections[k].trim());
 
 // Extract object names
-const objectNames = sections.objects
-  .split(/,\s*/)
-  .map(obj => obj.replace(/\s*\(.*?\)\s*/g, '').trim())
-  .filter(obj => obj.length > 0);
+const objectPattern = /(Codeunit|Table|Page|Report|Xmlport|Enum|Interface|Query|Extension|Controladdin|Dotnet|Profile|Entitlement|Permissionset|Requestpage)\s+\d+/gi;
+
+const objectNames = sections.objects.match(objectPattern) || [];
 
 // Build entries
 const newEntries = objectNames.map(obj => ({
