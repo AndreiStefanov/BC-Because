@@ -1,0 +1,10 @@
+[
+  {
+    "object": "Codeunit 80— added VAT check trigger before commit Table 37— added VAT validation status field",
+    "pr": 7,
+    "commit": "28b1d23895bf8c452052d48f2f19b245702bda93",
+    "date": "2026-08-04T14:36:14Z",
+    "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
+    "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+  }
+]
