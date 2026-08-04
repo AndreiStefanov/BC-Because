@@ -20,4 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Update history
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+          PR_MERGED_AT: ${{ github.event.pull_request.merged_at }}
         run: node src/update_history.js

@@ -90,6 +90,4 @@ function ValidateWhy(why) {
   }
 }
 
-console.log("RAW BODY:", JSON.stringify(body));
-console.log("PARSED:", JSON.stringify(sections));
 ValidateSections(sections.title, sections.scenario, sections.objects, sections.why);
