@@ -208,5 +208,32 @@
     "date": "2026-11-04T16:20:00Z",
     "scenario": "Black Friday caused deadlocks when 1200 orders were posted simultaneously.",
     "why": "Implemented optimistic concurrency on Sales-Post. Contention dropped 90% under peak load."
+  },
+  {
+    "object": "Codeunit 80",
+    "pr": 9,
+    "commit": "48db401cf4f6d458010339dd9d053da364b652af",
+    "date": "2026-08-05T07:29:03Z",
+    "author": "AndreiStefanov",
+    "scenario": "Finance team reported that 12 invoices were sent to customers with invalid VAT IDs last month, each requiring manual correction and a corrected invoice. The root cause: VAT validation happened after the invoice was created, not before. By the time the error was caught, the customer already had the invoice.",
+    "why": "VAT must be validated before posting because invalid invoices reaching customers creates compliance risk and manual rework. The new flow checks the VAT ID against the VIES service at posting time. If validation fails, the order is blocked with a clear error message. Previously this check happened post-commit, which meant invalid invoices were already created before anyone noticed."
+  },
+  {
+    "object": "Table 37",
+    "pr": 9,
+    "commit": "48db401cf4f6d458010339dd9d053da364b652af",
+    "date": "2026-08-05T07:29:03Z",
+    "author": "AndreiStefanov",
+    "scenario": "Finance team reported that 12 invoices were sent to customers with invalid VAT IDs last month, each requiring manual correction and a corrected invoice. The root cause: VAT validation happened after the invoice was created, not before. By the time the error was caught, the customer already had the invoice.",
+    "why": "VAT must be validated before posting because invalid invoices reaching customers creates compliance risk and manual rework. The new flow checks the VAT ID against the VIES service at posting time. If validation fails, the order is blocked with a clear error message. Previously this check happened post-commit, which meant invalid invoices were already created before anyone noticed."
+  },
+  {
+    "object": "Page 42",
+    "pr": 9,
+    "commit": "48db401cf4f6d458010339dd9d053da364b652af",
+    "date": "2026-08-05T07:29:03Z",
+    "author": "AndreiStefanov",
+    "scenario": "Finance team reported that 12 invoices were sent to customers with invalid VAT IDs last month, each requiring manual correction and a corrected invoice. The root cause: VAT validation happened after the invoice was created, not before. By the time the error was caught, the customer already had the invoice.",
+    "why": "VAT must be validated before posting because invalid invoices reaching customers creates compliance risk and manual rework. The new flow checks the VAT ID against the VIES service at posting time. If validation fails, the order is blocked with a clear error message. Previously this check happened post-commit, which meant invalid invoices were already created before anyone noticed."
   }
 ]
