@@ -144,6 +144,7 @@ function csvEscape(val){
 
 window.exportCSV = function(){
   var filtered = getFiltered();
+  console.log("RENDER: filtered to", filtered.length, "entries");
   var header = 'Object,PR,Author,Date,Scenario,Why';
   var rows = filtered.map(function(e){
     return csvEscape(e.object) + ',' + e.pr + ',' + csvEscape(e.author) + ',' + e.date.slice(0,10) + ',' + csvEscape(e.scenario) + ',' + csvEscape(e.why);
@@ -171,6 +172,7 @@ window.render = async function(){
     try {
       var res = await fetch('history.json');
       cachedData = await res.json();
+      console.log("RENDER: loaded", cachedData.length, "entries");
     } catch(e){
       document.getElementById('stats').innerText = 'Could not load object history.';
       return;
@@ -178,6 +180,7 @@ window.render = async function(){
   }
 
   var filtered = getFiltered();
+  console.log("RENDER: filtered to", filtered.length, "entries");
 
   var groups = {};
   var displayNames = {};
@@ -260,7 +263,7 @@ document.getElementById('btn-expand-all').addEventListener('click', window.expan
 document.getElementById('btn-collapse-all').addEventListener('click', window.collapseAll);
 document.getElementById('btn-export-csv').addEventListener('click', window.exportCSV);
 
-window.render();
+window.addEventListener("load", window.render);
 
 })();
 </script>
