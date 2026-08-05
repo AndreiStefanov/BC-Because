@@ -4,6 +4,7 @@ const body = process.env.PR_BODY;
 const prNumber = process.env.PR_NUMBER;
 const mergeSha = process.env.PR_MERGE_SHA;
 const mergedAt = process.env.PR_MERGED_AT;
+const prAuthor = process.env.PR_AUTHOR || 'unknown';
 
 //  Parsing section
 const lines = body.split('\n');
@@ -34,6 +35,7 @@ const newEntries = objectNames.map(obj => ({
   pr: parseInt(prNumber),
   commit: mergeSha,
   date: mergedAt,
+  author: prAuthor,
   scenario: sections.scenario,
   why: sections.why
 }));

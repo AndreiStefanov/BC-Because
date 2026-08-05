@@ -7,12 +7,17 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f6f8;color:#1a1a2e;padding:32px 16px}
-.container{max-width:1100px;margin:0 auto}
+.container{max-width:1200px;margin:0 auto}
 h1{font-size:24px;font-weight:700;color:#16213e;margin-bottom:4px}
-.subtitle{color:#6b7280;font-size:14px;margin-bottom:24px}
+.subtitle{color:#6b7280;font-size:14px;margin-bottom:16px}
+.toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.toolbar button{padding:6px 14px;background:#16213e;color:white;border:none;border-radius:6px;font-size:13px;cursor:pointer}
+.toolbar button:hover{background:#0f172a}
+.toolbar button.ghost{background:#e5e7eb;color:#1a1a2e}
 .filters{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;align-items:center}
 .filters input,.filters select{padding:8px 12px;border:1px solid #d1d5db;border-radius:6px;font-size:14px;background:white;color:#1a1a2e}
-.filters input{width:140px}
+.filters input{width:160px}
+.filters input.search{width:220px}
 .filters select{min-width:150px}
 .filters button{padding:8px 16px;background:#16213e;color:white;border:none;border-radius:6px;font-size:14px;cursor:pointer}
 .filters button:hover{background:#0f172a}
@@ -28,40 +33,52 @@ th{text-align:left;padding:10px 16px;font-size:12px;text-transform:uppercase;col
 td{padding:12px 16px;font-size:14px;border-bottom:1px solid #f3f4f6;vertical-align:top}
 td.pr a{color:#2563eb;text-decoration:none;font-weight:500}
 td.pr a:hover{text-decoration:underline}
+td.author{color:#6b7280;font-size:13px;white-space:nowrap}
 td.date{white-space:nowrap;color:#6b7280;font-size:13px}
-td.scenario,td.why{max-width:320px}
+td.scenario,td.why{max-width:300px}
 .empty{text-align:center;padding:48px;color:#9ca3af;font-size:15px}
+a{color:#16213e;text-decoration:none;font-size:14px;font-weight:500}
+a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
 <div class="container">
 <h1>BC Because</h1>
-<p class="subtitle">Business change history - every PR, every object, every reason.</p>
-<div class="filters">
-<select id="filter-type">
-<option value="">All object types</option>
-<option value="Codeunit">Codeunit</option>
-<option value="Table">Table</option>
-<option value="Page">Page</option>
-<option value="Report">Report</option>
-<option value="Xmlport">Xmlport</option>
-<option value="Enum">Enum</option>
-<option value="Interface">Interface</option>
-<option value="Query">Query</option>
-<option value="Extension">Extension</option>
-<option value="Controladdin">Controladdin</option>
-<option value="Dotnet">Dotnet</option>
-<option value="Profile">Profile</option>
-<option value="Entitlement">Entitlement</option>
-<option value="Permissionset">Permissionset</option>
-<option value="Requestpage">Requestpage</option>
-</select>
-<input type="text" id="filter-pr" placeholder="PR number (e.g. 7)">
-<input type="date" id="filter-date-from" placeholder="From date">
-<input type="date" id="filter-date-to" placeholder="To date">
-<button id="btn-apply">Apply</button>
-<button id="btn-clear" class="clear-btn">Clear</button>
+<p class="subtitle">Business change history &mdash; every PR, every object, every reason.</p>
+
+<div class="toolbar">
+  <button id="btn-expand-all">Expand all</button>
+  <button id="btn-collapse-all" class="ghost">Collapse all</button>
+  <button id="btn-export-csv" class="ghost">Export CSV</button>
 </div>
+
+<div class="filters">
+  <select id="filter-type">
+    <option value="">All object types</option>
+    <option value="Codeunit">Codeunit</option>
+    <option value="Table">Table</option>
+    <option value="Page">Page</option>
+    <option value="Report">Report</option>
+    <option value="Xmlport">Xmlport</option>
+    <option value="Enum">Enum</option>
+    <option value="Interface">Interface</option>
+    <option value="Query">Query</option>
+    <option value="Extension">Extension</option>
+    <option value="Controladdin">Controladdin</option>
+    <option value="Dotnet">Dotnet</option>
+    <option value="Profile">Profile</option>
+    <option value="Entitlement">Entitlement</option>
+    <option value="Permissionset">Permissionset</option>
+    <option value="Requestpage">Requestpage</option>
+  </select>
+  <input type="text" id="filter-pr" placeholder="PR number (e.g. 7)">
+  <input type="text" id="filter-search" class="search" placeholder="Search VAT, invoice, posting...">
+  <input type="date" id="filter-date-from" placeholder="Start date">
+  <input type="date" id="filter-date-to" placeholder="End date">
+  <button id="btn-apply">Apply</button>
+  <button id="btn-clear" class="clear-btn">Clear</button>
+</div>
+
 <div class="stats" id="stats"></div>
 <div id="history"></div>
 </div>
@@ -69,6 +86,15 @@ td.scenario,td.why{max-width:320px}
 (function(){
 
 var typeOrder = ['Codeunit','Table','Page','Report','Xmlport','Enum','Interface','Query','Extension','Controladdin','Dotnet','Profile','Entitlement','Permissionset','Requestpage'];
+var cachedData = [];
+
+function normalizeObject(objName){
+  return objName
+    .replace(/\s*\(.*?\)\s*$/g, '')
+    .replace(/^([a-zA-Z]+)/, function(m){
+      return m.charAt(0).toUpperCase() + m.slice(1).toLowerCase();
+    }).trim();
+}
 
 function getType(objName){
   var m = objName.match(/^([A-Za-z]+)/);
@@ -76,38 +102,86 @@ function getType(objName){
 }
 
 function sortByType(a,b){
-  var ta = typeOrder.indexOf(getType(a.object));
-  var tb = typeOrder.indexOf(getType(b.object));
+  var ta = typeOrder.indexOf(getType(a));
+  var tb = typeOrder.indexOf(getType(b));
   if (ta !== tb) return ta - tb;
-  return a.object.localeCompare(b.object, undefined, {numeric:true});
+  return a.localeCompare(b, undefined, {numeric:true});
 }
 
-window.render = async function(){
-  try {
-    var res = await fetch('history.json');
-    var data = await res.json();
-  } catch(e){
-    document.getElementById('stats').innerText = 'Could not load history.json. Make sure it exists in the same folder.';
-    return;
-  }
-
+function getFiltered(){
   var typeFilter = document.getElementById('filter-type').value.toLowerCase();
   var prFilter = document.getElementById('filter-pr').value.trim();
+  var searchFilter = document.getElementById('filter-search').value.trim().toLowerCase();
   var dateFrom = document.getElementById('filter-date-from').value;
   var dateTo = document.getElementById('filter-date-to').value;
 
-  var filtered = data.filter(function(e){
-    if (typeFilter && !e.object.toLowerCase().startsWith(typeFilter)) return false;
+  return cachedData.filter(function(e){
+    var normObj = normalizeObject(e.object);
+    var normType = getType(normObj).toLowerCase();
+    if (typeFilter && normType !== typeFilter) return false;
     if (prFilter && e.pr !== parseInt(prFilter,10)) return false;
-    if (dateFrom && e.date < dateFrom) return false;
-    if (dateTo && e.date > dateTo + 'T23:59:59Z') return false;
+    if (dateFrom && e.date.slice(0,10) < dateFrom) return false;
+    if (dateTo && e.date.slice(0,10) > dateTo) return false;
+    if (searchFilter) {
+      var haystack = (e.object + ' ' + e.scenario + ' ' + e.why + ' ' + (e.author||'')).toLowerCase();
+      if (haystack.indexOf(searchFilter) === -1) return false;
+    }
     return true;
   });
+}
+
+function csvEscape(val){
+  val = (val||'').replace(/"/g, '""');
+  return '"' + val + '"';
+}
+
+window.exportCSV = function(){
+  var filtered = getFiltered();
+  var header = 'Object,PR,Author,Date,Scenario,Why';
+  var rows = filtered.map(function(e){
+    return csvEscape(e.object) + ',' + e.pr + ',' + csvEscape(e.author) + ',' + e.date.slice(0,10) + ',' + csvEscape(e.scenario) + ',' + csvEscape(e.why);
+  });
+  var csv = header + '\n' + rows.join('\n');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'bc-because-history-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+window.expandAll = function(){
+  document.querySelectorAll('.object-body').forEach(function(b){ b.classList.add('open'); });
+};
+
+window.collapseAll = function(){
+  document.querySelectorAll('.object-body').forEach(function(b){ b.classList.remove('open'); });
+};
+
+window.render = async function(){
+  if (cachedData.length === 0){
+    try {
+      var res = await fetch('history.json');
+      cachedData = await res.json();
+    } catch(e){
+      document.getElementById('stats').innerText = 'Could not load object history.';
+      return;
+    }
+  }
+
+  var filtered = getFiltered();
 
   var groups = {};
+  var displayNames = {};
+
   filtered.forEach(function(e){
-    if (!groups[e.object]) groups[e.object] = [];
-    groups[e.object].push(e);
+    var normKey = normalizeObject(e.object);
+    if (!groups[normKey]) groups[normKey] = [];
+    groups[normKey].push(e);
+    if (!displayNames[normKey] || e.object.length > displayNames[normKey].length) {
+      displayNames[normKey] = e.object;
+    }
   });
 
   Object.keys(groups).forEach(function(k){
@@ -115,10 +189,11 @@ window.render = async function(){
   });
 
   var sortedKeys = Object.keys(groups).sort(function(a,b){
-    return sortByType({object:a},{object:b});
+    return sortByType(displayNames[a], displayNames[b]);
   });
 
-  document.getElementById('stats').innerText = 'Showing ' + filtered.length + ' entries across ' + sortedKeys.length + ' objects';
+  document.getElementById('stats').innerText =
+    'Showing ' + filtered.length + ' entries across ' + sortedKeys.length + ' objects';
 
   var container = document.getElementById('history');
   container.innerHTML = '';
@@ -128,11 +203,14 @@ window.render = async function(){
     return;
   }
 
-  sortedKeys.forEach(function(key){
-    var entries = groups[key];
+  sortedKeys.forEach(function(normKey){
+    var entries = groups[normKey];
+    var displayName = displayNames[normKey];
+
     var rows = entries.map(function(e){
       return '<tr>' +
         '<td class="pr"><a href="https://github.com/AndreiStefanov/BC-Because/pull/' + e.pr + '" target="_blank">#' + e.pr + '</a></td>' +
+        '<td class="author">' + (e.author||'') + '</td>' +
         '<td class="date">' + e.date.slice(0,10) + '</td>' +
         '<td class="scenario">' + e.scenario + '</td>' +
         '<td class="why">' + e.why + '</td>' +
@@ -143,12 +221,12 @@ window.render = async function(){
     div.className = 'object-group';
     div.innerHTML =
       '<div class="object-header" onclick="this.nextElementSibling.classList.toggle(\'open\')">' +
-        '<span>' + key + '</span>' +
+        '<span>' + displayName + '</span>' +
         '<span class="count">' + entries.length + ' change' + (entries.length > 1 ? 's' : '') + '</span>' +
       '</div>' +
       '<div class="object-body open">' +
         '<table>' +
-          '<thead><tr><th>PR</th><th>Date</th><th>Scenario</th><th>Why</th></tr></thead>' +
+          '<thead><tr><th>PR</th><th>Author</th><th>Date</th><th>Scenario</th><th>Why</th></tr></thead>' +
           '<tbody>' + rows + '</tbody>' +
         '</table>' +
       '</div>';
@@ -159,13 +237,20 @@ window.render = async function(){
 window.clearFilters = function(){
   document.getElementById('filter-type').value = '';
   document.getElementById('filter-pr').value = '';
+  document.getElementById('filter-search').value = '';
   document.getElementById('filter-date-from').value = '';
   document.getElementById('filter-date-to').value = '';
   window.render();
 };
 
+// Live filtering for dropdown + search; Apply button for dates + PR number
+document.getElementById('filter-type').addEventListener('change', window.render);
+document.getElementById('filter-search').addEventListener('input', window.render);
 document.getElementById('btn-apply').addEventListener('click', window.render);
 document.getElementById('btn-clear').addEventListener('click', window.clearFilters);
+document.getElementById('btn-expand-all').addEventListener('click', window.expandAll);
+document.getElementById('btn-collapse-all').addEventListener('click', window.collapseAll);
+document.getElementById('btn-export-csv').addEventListener('click', window.exportCSV);
 
 window.render();
 

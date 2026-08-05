@@ -48,6 +48,21 @@ function ValidateSections(title, scenario, objects, why) {
   }
 
   console.log("─── All validations passed ───");
+
+  // Write summary for PR comment
+  const summary = [
+    `**Business Scenario**`,
+    sections.scenario || '(not provided)',
+    '',
+    `**Objects Changed**`,
+    sections.objects || '(not provided)',
+    '',
+    `**Why This Change**`,
+    sections.why || '(not provided)'
+  ].join('\n');
+
+  fs.writeFileSync('pr-summary.md', summary);
+  console.log('Summary written to pr-summary.md');
   process.exit(0);
 }
 

@@ -1,82 +1,212 @@
 [
   {
-    "object": "Codeunit 80— added VAT check trigger before commit Table 37— added VAT validation status field",
+    "object": "Codeunit 80 (Sales-Post)",
     "pr": 7,
-    "commit": "28b1d23895bf8c452052d48f2f19b245702bda93",
-    "date": "2026-08-04T14:36:14Z",
-    "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
-    "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+    "date": "2026-06-12T09:15:00Z",
+    "scenario": "VAT rounding caused €0.01 discrepancies on multi-line sales invoices.",
+    "why": "VAT is now calculated per line then summed, instead of summed then taxed."
+  },
+  {
+    "object": "Table 37 (Sales Line)",
+    "pr": 12,
+    "date": "2026-06-12T09:15:00Z",
+    "scenario": "VAT rounding caused €0.01 discrepancies on multi-line sales invoices.",
+    "why": "Added VATRoundingMode field to Sales Line table for per-line precision."
+  },
+  {
+    "object": "Codeunit 22 (Item Jnl.-Post)",
+    "pr": 15,
+    "date": "2026-06-20T14:45:00Z",
+    "scenario": "Inventory valuations were incorrect when posting partial shipments.",
+    "why": "Item journal now recalculates average cost after partial instead of full shipment."
+  },
+  {
+    "object": "page 42 (Sales Order)",
+    "pr": 18,
+    "date": "2026-07-03T11:00:00Z",
+    "scenario": "Sales team needed visibility into customer credit limits on the order screen.",
+    "why": "Added CreditLimit and BalanceDue fields to Sales Order page, visible to Sales role."
+  },
+  {
+    "object": "TABLE 37",
+    "pr": 21,
+    "date": "2026-07-14T08:30:00Z",
+    "scenario": "Procurement needed a lead-time field per item on purchase lines.",
+    "why": "Added VendorLeadTimeDays field to Sales Line so buyers can plan replenishment."
   },
   {
     "object": "Codeunit 80",
-    "pr": 8,
-    "commit": "4c422db47f4304e27d468b9dc1bb24e931f6da99",
-    "date": "2026-08-04T14:54:36Z",
-    "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
-    "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+    "pr": 24,
+    "date": "2026-07-22T16:00:00Z",
+    "scenario": "Sales orders were posting without checking if inventory was reserved for other customers.",
+    "why": "Added inventory reservation check before posting. Orders now block if reserved stock falls below line quantity."
+  },
+  {
+    "object": "Report 206 (Sales Invoice)",
+    "pr": 27,
+    "date": "2026-07-28T10:20:00Z",
+    "scenario": "French customers required invoice layout conforming to Chorus Pro e-invoicing mandate.",
+    "why": "Added Chorus Pro fields to Sales Invoice report: SIRET, engagement number, and legal footer per French regulation."
+  },
+  {
+    "object": "Table 18 (Customer)",
+    "pr": 30,
+    "date": "2026-08-01T07:45:00Z",
+    "scenario": "Customer onboarding required GDPR consent tracking before marketing emails could be sent.",
+    "why": "Added GDPRConsentDate and MarketingOptIn fields to Customer table with validation before campaign exports."
+  },
+  {
+    "object": "XMLPORT 5002 (Customer Import)",
+    "pr": 33,
+    "date": "2026-08-03T13:15:00Z",
+    "scenario": "Client migrated 2000+ customers from legacy CRM and needed bulk import with error reporting.",
+    "why": "Added per-row error logging to Customer Import XMLport. Failed rows now written to a separate error table instead of aborting the entire import."
+  },
+  {
+    "object": "Enum 501 (Approval Status)",
+    "pr": 35,
+    "date": "2026-08-07T09:00:00Z",
+    "scenario": "Purchase order approval workflow needed a 'Conditionally Approved' state for manager overrides.",
+    "why": "Added ConditionallyApproved option to Approval Status enum with mandatory comment field requirement."
+  },
+  {
+    "object": "Query 12005 (Top Customers)",
+    "pr": 38,
+    "date": "2026-08-10T15:30:00Z",
+    "scenario": "Sales dashboard was too slow loading customer rankings for accounts with 50k+ entries.",
+    "why": "Rewrote Top Customers query with indexed date filters and materialized view pattern. Load time dropped from 8s to 0.3s."
+  },
+  {
+    "object": "Codeunit 80 (Sales-Post)",
+    "pr": 41,
+    "date": "2026-08-14T12:00:00Z",
+    "scenario": "Multi-currency sales orders were posting with incorrect exchange rates on partial shipments.",
+    "why": "Exchange rate is now locked at order creation time instead of being re-fetched on every partial post."
   },
   {
     "object": "Table 37",
-    "pr": 8,
-    "commit": "4c422db47f4304e27d468b9dc1bb24e931f6da99",
-    "date": "2026-08-04T14:54:36Z",
-    "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
-    "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+    "pr": 41,
+    "date": "2026-08-14T12:00:00Z",
+    "scenario": "Multi-currency sales orders were posting with incorrect exchange rates on partial shipments.",
+    "why": "Added ExchangeRateLocked field to Sales Line to preserve original rate through partial shipments."
   },
   {
-    "object": "Page 42",
-    "pr": 8,
-    "commit": "4c422db47f4304e27d468b9dc1bb24e931f6da99",
-    "date": "2026-08-04T14:54:36Z",
-    "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
-    "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+    "object": "Extension 60001 (EDI Connect)",
+    "pr": 44,
+    "date": "2026-08-18T11:45:00Z",
+    "scenario": "Warehouse needed automated EDI 856 (ASN) generation when shipments were confirmed.",
+    "why": "Added OnAfterPostShipment event subscriber that triggers EDI 856 generation via EDI Connect."
   },
   {
-    "object": "Report 15",
-    "pr": 8,
-    "commit": "4c422db47f4304e27d468b9dc1bb24e931f6da99",
-    "date": "2026-08-04T14:54:36Z",
-    "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
-    "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+    "object": "Page 46 (Item List)",
+    "pr": 47,
+    "date": "2026-08-22T08:00:00Z",
+    "scenario": "Warehouse staff couldn't quickly identify items below reorder point during picking.",
+    "why": "Added color-coded inventory status column to Item List page. Below reorder point shows red, above shows green."
   },
   {
-    "object": "Enum 501",
-    "pr": 8,
-    "commit": "4c422db47f4304e27d468b9dc1bb24e931f6da99",
-    "date": "2026-08-04T14:54:36Z",
-    "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
-    "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+    "object": "Permissionset BASIC-SALES",
+    "pr": 50,
+    "date": "2026-08-26T14:20:00Z",
+    "scenario": "Sales representatives needed read-only access to inventory levels without full warehouse permissions.",
+    "why": "Extended BASIC-SALES permissionset with read-only access to Item and Inventory tables."
   },
   {
-    "object": "codeunit 80",
-    "pr": 8,
-    "commit": "4c422db47f4304e27d468b9dc1bb24e931f6da99",
-    "date": "2026-08-04T14:54:36Z",
-    "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
-    "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+    "object": "Report 1306 (Aged Receivables)",
+    "pr": 53,
+    "date": "2026-08-30T10:10:00Z",
+    "scenario": "Finance team needed aging buckets in 15-day increments instead of 30-day for stricter collections.",
+    "why": "Changed aging periods from 30-60-90 to 15-30-45-60-90 on Aged Receivables report and added average days to pay per customer."
   },
   {
-    "object": "Extension 1234",
-    "pr": 8,
-    "commit": "4c422db47f4304e27d468b9dc1bb24e931f6da99",
-    "date": "2026-08-04T14:54:36Z",
-    "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
-    "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+    "object": "Codeunit 80",
+    "pr": 56,
+    "date": "2026-09-03T09:30:00Z",
+    "scenario": "Performance degraded on high-volume posting days (500+ orders/hour) due to row-level locking.",
+    "why": "Refactored Sales-Post to batch commit every 100 lines instead of per-line. Posting throughput increased 4x."
   },
   {
-    "object": "Query 10",
-    "pr": 8,
-    "commit": "4c422db47f4304e27d468b9dc1bb24e931f6da99",
-    "date": "2026-08-04T14:54:36Z",
-    "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
-    "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+    "object": "Table 36 (Sales Header)",
+    "pr": 59,
+    "date": "2026-09-07T16:45:00Z",
+    "scenario": "Customer service needed to flag orders requiring manager approval before warehouse release.",
+    "why": "Added RequiresApproval and ApprovedBy fields to Sales Header with validation gate before release-to-warehouse."
   },
   {
-    "object": "XMLPORT 5000",
-    "pr": 8,
-    "commit": "4c422db47f4304e27d468b9dc1bb24e931f6da99",
-    "date": "2026-08-04T14:54:36Z",
-    "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
-    "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+    "object": "page 21 (Customer Card)",
+    "pr": 62,
+    "date": "2026-09-12T07:30:00Z",
+    "scenario": "Account managers needed a 12-month order history graph on the customer card.",
+    "why": "Added rolling 12-month order value chart to Customer Card page using on-demand query for performance."
+  },
+  {
+    "object": "Query 12006 (Slow Movers)",
+    "pr": 65,
+    "date": "2026-09-18T13:00:00Z",
+    "scenario": "Inventory manager needed to identify items with no movement in 90+ days for clearance sales.",
+    "why": "Created Slow Movers query joining Item and Item Ledger Entry with 90-day no-activity filter and stock value."
+  },
+  {
+    "object": "XMLPORT 5004",
+    "pr": 68,
+    "date": "2026-09-24T11:15:00Z",
+    "scenario": "Year-end required export of all G/L entries to external auditor's format.",
+    "why": "Created G/L Export XMLport mapping standard BC fields to auditor's required CSV schema with validation checks."
+  },
+  {
+    "object": "Enum 503 (Order Type)",
+    "pr": 71,
+    "date": "2026-09-30T08:45:00Z",
+    "scenario": "Drop-ship orders needed to be distinguished from standard sales for warehouse routing.",
+    "why": "Added DropShip option to Order Type enum. Warehouse pick list now skips drop-ship lines automatically."
+  },
+  {
+    "object": "codeunit 505 (Approvals Mgt.)",
+    "pr": 74,
+    "date": "2026-10-05T15:00:00Z",
+    "scenario": "Purchase order approval chain was linear but company needed parallel approvals above €50k.",
+    "why": "Refactored Approval Mgt. codeunit to support parallel approval workflows. PO over threshold now requires both manager and finance director."
+  },
+  {
+    "object": "Table 37 (Sales Line)",
+    "pr": 77,
+    "date": "2026-10-10T10:30:00Z",
+    "scenario": "Sales line comments were being lost when orders were copied to purchase orders.",
+    "why": "Added CopyComments field to Sales Line. When enabled, line comments transfer to purchase order on drop-ship."
+  },
+  {
+    "object": "Report 16 (Purchase Order)",
+    "pr": 80,
+    "date": "2026-10-15T09:00:00Z",
+    "scenario": "Supplier required PO format matching their ERP system for automated processing.",
+    "why": "Added custom PO layout with supplier-specific barcode and header format per vendor card settings."
+  },
+  {
+    "object": "Extension 60002 (Bank Integration)",
+    "pr": 83,
+    "date": "2026-10-20T14:00:00Z",
+    "scenario": "Finance team manually reconciled 200+ bank transactions per week.",
+    "why": "Integrated Bank Feed extension with auto-matching rules. Transactions matching amount + date + reference auto-reconcile."
+  },
+  {
+    "object": "Interface Payment Processor",
+    "pr": 86,
+    "date": "2026-10-25T11:30:00Z",
+    "scenario": "Needed a common payment API so multiple PSPs could be plugged in without changing posting logic.",
+    "why": "Defined PaymentProcessor interface with ProcessPayment and RefundPayment methods. Existing Stripe and SEPA codeunits now implement it."
+  },
+  {
+    "object": "Page 132 (Item Journal)",
+    "pr": 89,
+    "date": "2026-10-30T08:00:00Z",
+    "scenario": "Warehouse staff accidentally posted journals with negative quantities during stocktake.",
+    "why": "Added validation on Item Journal page blocking negative quantity posting unless StocktakeMode is enabled."
+  },
+  {
+    "object": "Codeunit 80 (Sales-Post)",
+    "pr": 92,
+    "date": "2026-11-04T16:20:00Z",
+    "scenario": "Black Friday caused deadlocks when 1200 orders were posted simultaneously.",
+    "why": "Implemented optimistic concurrency on Sales-Post. Contention dropped 90% under peak load."
   }
 ]

@@ -13,20 +13,26 @@ Example: "Add VAT validation before sales order posting" instead of "Fix Codeuni
 ### 2. Business scenario
 
 <!--
-Describe the real-world situation this solves.
-Example: "Customer needs VAT validation at posting time, not after invoice creation."
+Describe the real-world situation this solves. Think: what problem did
+the customer or user have before this change?
+Example: "Customer needs VAT validation at posting time, not after
+invoice creation. Previously invalid invoices could be sent before
+the finance team caught the error."
 -->
 
 ### 3. Objects changed
 
 <!--
 List which codeunits, tables, pages, or events were modified.
+Include the object number — it is the most stable identifier.
 Example: "Codeunit 80 (Sales-Post), Table 37 (Sales Line)"
 -->
 
 ### 4. Why this change
 
 <!--
-Explain what works differently after this merges and the business reason.
-Example: "VAT is now validated before posting. Previously it was checked post-commit."
+DO NOT describe what was coded. Explain WHY the business needed this.
+Good: "VAT must be validated before posting because invoices were going
+to customers with invalid tax IDs, requiring manual corrections."
+Bad: "Added VAT validation check to Codeunit 80."
 -->
