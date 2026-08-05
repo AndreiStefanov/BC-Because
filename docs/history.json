@@ -97,5 +97,32 @@
     "author": "AndreiStefanov",
     "scenario": "Sales team reported that customers on temporary credit hold had orders sitting blocked for days after their hold expired, because nobody manually released them. One VIP client waited 4 days past their hold expiry before calling to complain. The hold was lifted in the system but the orders stayed blocked until someone noticed.",
     "why": "When a credit hold expires, affected sales orders are now automatically unblocked on the next posting attempt or nightly batch. Customers no longer wait past their hold period. Previously the hold was lifted on the customer record but orders remained locked until manual intervention, which created a gap of hours to days depending on when someone checked."
+  },
+  {
+    "object": "Codeunit 7320",
+    "pr": 14,
+    "commit": "caa6a4d49d9349d28ca6315233052c26b3cd7785",
+    "date": "2026-08-05T13:17:04Z",
+    "author": "AndreiStefanov",
+    "scenario": "The logistics team lost traceability of 6 high-value items during a warehouse transfer last month because serial numbers weren't carried over between locations. The items arrived at the destination but sat quarantined for 3 days while someone manually cross-referenced spreadsheets to confirm they were the same units. For regulated clients in pharma and aerospace, this gap is an audit failure.",
+    "why": "Serial numbers now flow through the transfer from source to destination, preserving the full traceability chain. Transfers with serial-tracked items block posting until every serial number is confirmed at both ends. Previously serial numbers were recorded at receipt and shipment but dropped during internal moves, creating a blind spot that required manual reconciliation for every regulated client."
+  },
+  {
+    "object": "Table 5743",
+    "pr": 14,
+    "commit": "caa6a4d49d9349d28ca6315233052c26b3cd7785",
+    "date": "2026-08-05T13:17:04Z",
+    "author": "AndreiStefanov",
+    "scenario": "The logistics team lost traceability of 6 high-value items during a warehouse transfer last month because serial numbers weren't carried over between locations. The items arrived at the destination but sat quarantined for 3 days while someone manually cross-referenced spreadsheets to confirm they were the same units. For regulated clients in pharma and aerospace, this gap is an audit failure.",
+    "why": "Serial numbers now flow through the transfer from source to destination, preserving the full traceability chain. Transfers with serial-tracked items block posting until every serial number is confirmed at both ends. Previously serial numbers were recorded at receipt and shipment but dropped during internal moves, creating a blind spot that required manual reconciliation for every regulated client."
+  },
+  {
+    "object": "Page 5742",
+    "pr": 14,
+    "commit": "caa6a4d49d9349d28ca6315233052c26b3cd7785",
+    "date": "2026-08-05T13:17:04Z",
+    "author": "AndreiStefanov",
+    "scenario": "The logistics team lost traceability of 6 high-value items during a warehouse transfer last month because serial numbers weren't carried over between locations. The items arrived at the destination but sat quarantined for 3 days while someone manually cross-referenced spreadsheets to confirm they were the same units. For regulated clients in pharma and aerospace, this gap is an audit failure.",
+    "why": "Serial numbers now flow through the transfer from source to destination, preserving the full traceability chain. Transfers with serial-tracked items block posting until every serial number is confirmed at both ends. Previously serial numbers were recorded at receipt and shipment but dropped during internal moves, creating a blind spot that required manual reconciliation for every regulated client."
   }
 ]
