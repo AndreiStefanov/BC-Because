@@ -67,21 +67,21 @@ td.scenario,td.why{max-width:320px}
 </div>
 <script>
 (function(){
-​
+
 var typeOrder = ['Codeunit','Table','Page','Report','Xmlport','Enum','Interface','Query','Extension','Controladdin','Dotnet','Profile','Entitlement','Permissionset','Requestpage'];
-​
+
 function getType(objName){
   var m = objName.match(/^([A-Za-z]+)/);
   return m ? m[1] : 'Other';
 }
-​
+
 function sortByType(a,b){
   var ta = typeOrder.indexOf(getType(a.object));
   var tb = typeOrder.indexOf(getType(b.object));
   if (ta !== tb) return ta - tb;
   return a.object.localeCompare(b.object, undefined, {numeric:true});
 }
-​
+
 window.render = async function(){
   try {
     var res = await fetch('history.json');
@@ -90,12 +90,12 @@ window.render = async function(){
     document.getElementById('stats').innerText = 'Could not load history.json. Make sure it exists in the same folder.';
     return;
   }
-​
+
   var typeFilter = document.getElementById('filter-type').value.toLowerCase();
   var prFilter = document.getElementById('filter-pr').value.trim();
   var dateFrom = document.getElementById('filter-date-from').value;
   var dateTo = document.getElementById('filter-date-to').value;
-​
+
   var filtered = data.filter(function(e){
     if (typeFilter && !e.object.toLowerCase().startsWith(typeFilter)) return false;
     if (prFilter && e.pr !== parseInt(prFilter,10)) return false;
@@ -103,31 +103,31 @@ window.render = async function(){
     if (dateTo && e.date > dateTo + 'T23:59:59Z') return false;
     return true;
   });
-​
+
   var groups = {};
   filtered.forEach(function(e){
     if (!groups[e.object]) groups[e.object] = [];
     groups[e.object].push(e);
   });
-​
+
   Object.keys(groups).forEach(function(k){
     groups[k].sort(function(a,b){ return b.date.localeCompare(a.date); });
   });
-​
+
   var sortedKeys = Object.keys(groups).sort(function(a,b){
     return sortByType({object:a},{object:b});
   });
-​
+
   document.getElementById('stats').innerText = 'Showing ' + filtered.length + ' entries across ' + sortedKeys.length + ' objects';
-​
+
   var container = document.getElementById('history');
   container.innerHTML = '';
-​
+
   if (sortedKeys.length === 0){
     container.innerHTML = '<div class="empty">No entries match your filters.</div>';
     return;
   }
-​
+
   sortedKeys.forEach(function(key){
     var entries = groups[key];
     var rows = entries.map(function(e){
@@ -138,7 +138,7 @@ window.render = async function(){
         '<td class="why">' + e.why + '</td>' +
         '</tr>';
     }).join('');
-​
+
     var div = document.createElement('div');
     div.className = 'object-group';
     div.innerHTML =
@@ -155,7 +155,7 @@ window.render = async function(){
     container.appendChild(div);
   });
 };
-​
+
 window.clearFilters = function(){
   document.getElementById('filter-type').value = '';
   document.getElementById('filter-pr').value = '';
@@ -163,12 +163,12 @@ window.clearFilters = function(){
   document.getElementById('filter-date-to').value = '';
   window.render();
 };
-​
+
 document.getElementById('btn-apply').addEventListener('click', window.render);
 document.getElementById('btn-clear').addEventListener('click', window.clearFilters);
-​
+
 window.render();
-​
+
 })();
 </script>
 </body>
