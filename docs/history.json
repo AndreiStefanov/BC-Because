@@ -1,0 +1,20 @@
+[
+  {
+    "object": "Codeunit 80",
+    "pr": 10,
+    "commit": "9e1f92efa21bc94c969d7f12cef5ee12ada3b9e8",
+    "date": "2026-08-05T10:25:00Z",
+    "author": "AndreiStefanov",
+    "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
+    "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+  },
+  {
+    "object": "Table 37",
+    "pr": 10,
+    "commit": "9e1f92efa21bc94c969d7f12cef5ee12ada3b9e8",
+    "date": "2026-08-05T10:25:00Z",
+    "author": "AndreiStefanov",
+    "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
+    "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+  }
+]
