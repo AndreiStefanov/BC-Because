@@ -18,7 +18,7 @@ On merge, BC Because builds a living changelog grouped by object — a filterabl
 
 1. Copy `.github/workflows/action.yaml` into your repo
 2. Copy `.github/pull_request_template.md` into `.github/`
-3. Copy `src/` and `tracker/` folders into your repo
+3. Copy `src/` and `docs/` folders into your repo
 4. Done — BC Because runs on every PR
 
 ## How it works

@@ -41,7 +41,7 @@ const newEntries = objectNames.map(obj => ({
 }));
 
 // Append to json
-const historyPath = 'tracker/history.json';
+const historyPath = 'docs/history.json';
 let history = [];
 
 try {
