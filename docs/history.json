@@ -70,5 +70,32 @@
     "author": "AndreiStefanov",
     "scenario": "Finance flagged that a client paying in USD had 14 invoices out of 200 with €0.01 discrepancies when converted to EUR for reporting. Each required manual journal entry to correct. The root cause: BC rounded each line individually then summed, instead of summing then rounding. Over thousands of transactions, the drift became material enough that the auditor requested an explanation last quarter.",
     "why": "Rounding now happens at the document total level instead of per line, matching the client's ERP expectations and eliminating the drift that produced manual corrections. The mode is configurable per journal template so clients who prefer per-line rounding can keep it. Previously every multi-currency client had some level of discrepancy that finance had to manually clean up every month."
+  },
+  {
+    "object": "Codeunit 36",
+    "pr": 13,
+    "commit": "c8bef1cca790e51ed1279067370e4239d82930a1",
+    "date": "2026-08-05T11:05:11Z",
+    "author": "AndreiStefanov",
+    "scenario": "Sales team reported that customers on temporary credit hold had orders sitting blocked for days after their hold expired, because nobody manually released them. One VIP client waited 4 days past their hold expiry before calling to complain. The hold was lifted in the system but the orders stayed blocked until someone noticed.",
+    "why": "When a credit hold expires, affected sales orders are now automatically unblocked on the next posting attempt or nightly batch. Customers no longer wait past their hold period. Previously the hold was lifted on the customer record but orders remained locked until manual intervention, which created a gap of hours to days depending on when someone checked."
+  },
+  {
+    "object": "Codeunit 80",
+    "pr": 13,
+    "commit": "c8bef1cca790e51ed1279067370e4239d82930a1",
+    "date": "2026-08-05T11:05:11Z",
+    "author": "AndreiStefanov",
+    "scenario": "Sales team reported that customers on temporary credit hold had orders sitting blocked for days after their hold expired, because nobody manually released them. One VIP client waited 4 days past their hold expiry before calling to complain. The hold was lifted in the system but the orders stayed blocked until someone noticed.",
+    "why": "When a credit hold expires, affected sales orders are now automatically unblocked on the next posting attempt or nightly batch. Customers no longer wait past their hold period. Previously the hold was lifted on the customer record but orders remained locked until manual intervention, which created a gap of hours to days depending on when someone checked."
+  },
+  {
+    "object": "Table 18",
+    "pr": 13,
+    "commit": "c8bef1cca790e51ed1279067370e4239d82930a1",
+    "date": "2026-08-05T11:05:11Z",
+    "author": "AndreiStefanov",
+    "scenario": "Sales team reported that customers on temporary credit hold had orders sitting blocked for days after their hold expired, because nobody manually released them. One VIP client waited 4 days past their hold expiry before calling to complain. The hold was lifted in the system but the orders stayed blocked until someone noticed.",
+    "why": "When a credit hold expires, affected sales orders are now automatically unblocked on the next posting attempt or nightly batch. Customers no longer wait past their hold period. Previously the hold was lifted on the customer record but orders remained locked until manual intervention, which created a gap of hours to days depending on when someone checked."
   }
 ]
