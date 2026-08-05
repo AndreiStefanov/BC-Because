@@ -16,5 +16,32 @@
     "author": "AndreiStefanov",
     "scenario": "Customer needs VAT number validation before posting sales orders, not after invoice creation. Previously invalid invoices could be sent to customers before the finance team caught the error.",
     "why": "VAT is now validated before posting, blocking invalid invoices from being created. Previously VAT was checked post-commit, allowing invalid invoices through and requiring manual corrections. No impact on purchase flow. Check extension B for OnBeforePostSalesDoc subscription compatibility."
+  },
+  {
+    "object": "Codeunit 50",
+    "pr": 11,
+    "commit": "74ebfc9ad5afbc1ce2465187d75d01eb16e77820",
+    "date": "2026-08-05T10:43:07Z",
+    "author": "AndreiStefanov",
+    "scenario": "Warehouse manager flagged that three purchase orders were approved last quarter for items that were already overstocked, tying up €14,000 in inventory that sat unsold for 6 weeks. The approval workflow had no visibility into current stock levels — approvers just saw a PO amount, not whether the warehouse actually needed the items.",
+    "why": "Purchase orders now show a warning when the ordered item is already above its reorder point, and approvals are blocked unless the approver explicitly overrides. This prevents capital from being locked in excess inventory. Previously POs sailed through approval with no stock context, and the warehouse only flagged the problem after goods arrived."
+  },
+  {
+    "object": "Page 51",
+    "pr": 11,
+    "commit": "74ebfc9ad5afbc1ce2465187d75d01eb16e77820",
+    "date": "2026-08-05T10:43:07Z",
+    "author": "AndreiStefanov",
+    "scenario": "Warehouse manager flagged that three purchase orders were approved last quarter for items that were already overstocked, tying up €14,000 in inventory that sat unsold for 6 weeks. The approval workflow had no visibility into current stock levels — approvers just saw a PO amount, not whether the warehouse actually needed the items.",
+    "why": "Purchase orders now show a warning when the ordered item is already above its reorder point, and approvals are blocked unless the approver explicitly overrides. This prevents capital from being locked in excess inventory. Previously POs sailed through approval with no stock context, and the warehouse only flagged the problem after goods arrived."
+  },
+  {
+    "object": "Table 27",
+    "pr": 11,
+    "commit": "74ebfc9ad5afbc1ce2465187d75d01eb16e77820",
+    "date": "2026-08-05T10:43:07Z",
+    "author": "AndreiStefanov",
+    "scenario": "Warehouse manager flagged that three purchase orders were approved last quarter for items that were already overstocked, tying up €14,000 in inventory that sat unsold for 6 weeks. The approval workflow had no visibility into current stock levels — approvers just saw a PO amount, not whether the warehouse actually needed the items.",
+    "why": "Purchase orders now show a warning when the ordered item is already above its reorder point, and approvals are blocked unless the approver explicitly overrides. This prevents capital from being locked in excess inventory. Previously POs sailed through approval with no stock context, and the warehouse only flagged the problem after goods arrived."
   }
 ]
