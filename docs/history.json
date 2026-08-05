@@ -43,5 +43,32 @@
     "author": "AndreiStefanov",
     "scenario": "Warehouse manager flagged that three purchase orders were approved last quarter for items that were already overstocked, tying up €14,000 in inventory that sat unsold for 6 weeks. The approval workflow had no visibility into current stock levels — approvers just saw a PO amount, not whether the warehouse actually needed the items.",
     "why": "Purchase orders now show a warning when the ordered item is already above its reorder point, and approvals are blocked unless the approver explicitly overrides. This prevents capital from being locked in excess inventory. Previously POs sailed through approval with no stock context, and the warehouse only flagged the problem after goods arrived."
+  },
+  {
+    "object": "Codeunit 12",
+    "pr": 12,
+    "commit": "9247eb0fe5ee3624eb66d398e3e0d989eb60c3ee",
+    "date": "2026-08-05T10:54:57Z",
+    "author": "AndreiStefanov",
+    "scenario": "Finance flagged that a client paying in USD had 14 invoices out of 200 with €0.01 discrepancies when converted to EUR for reporting. Each required manual journal entry to correct. The root cause: BC rounded each line individually then summed, instead of summing then rounding. Over thousands of transactions, the drift became material enough that the auditor requested an explanation last quarter.",
+    "why": "Rounding now happens at the document total level instead of per line, matching the client's ERP expectations and eliminating the drift that produced manual corrections. The mode is configurable per journal template so clients who prefer per-line rounding can keep it. Previously every multi-currency client had some level of discrepancy that finance had to manually clean up every month."
+  },
+  {
+    "object": "Table 81",
+    "pr": 12,
+    "commit": "9247eb0fe5ee3624eb66d398e3e0d989eb60c3ee",
+    "date": "2026-08-05T10:54:57Z",
+    "author": "AndreiStefanov",
+    "scenario": "Finance flagged that a client paying in USD had 14 invoices out of 200 with €0.01 discrepancies when converted to EUR for reporting. Each required manual journal entry to correct. The root cause: BC rounded each line individually then summed, instead of summing then rounding. Over thousands of transactions, the drift became material enough that the auditor requested an explanation last quarter.",
+    "why": "Rounding now happens at the document total level instead of per line, matching the client's ERP expectations and eliminating the drift that produced manual corrections. The mode is configurable per journal template so clients who prefer per-line rounding can keep it. Previously every multi-currency client had some level of discrepancy that finance had to manually clean up every month."
+  },
+  {
+    "object": "Report 4",
+    "pr": 12,
+    "commit": "9247eb0fe5ee3624eb66d398e3e0d989eb60c3ee",
+    "date": "2026-08-05T10:54:57Z",
+    "author": "AndreiStefanov",
+    "scenario": "Finance flagged that a client paying in USD had 14 invoices out of 200 with €0.01 discrepancies when converted to EUR for reporting. Each required manual journal entry to correct. The root cause: BC rounded each line individually then summed, instead of summing then rounding. Over thousands of transactions, the drift became material enough that the auditor requested an explanation last quarter.",
+    "why": "Rounding now happens at the document total level instead of per line, matching the client's ERP expectations and eliminating the drift that produced manual corrections. The mode is configurable per journal template so clients who prefer per-line rounding can keep it. Previously every multi-currency client had some level of discrepancy that finance had to manually clean up every month."
   }
 ]
