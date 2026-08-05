@@ -170,7 +170,7 @@ window.collapseAll = function(){
 window.render = async function(){
   if (cachedData.length === 0){
     try {
-      var res = await fetch('history.json');
+      var res = await fetch('history.json', { cache: 'no-cache' });
       cachedData = await res.json();
       console.log("RENDER: loaded", cachedData.length, "entries");
     } catch(e){
