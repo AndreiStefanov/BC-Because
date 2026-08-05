@@ -16,7 +16,7 @@ h1{font-size:24px;font-weight:700;color:#16213e;margin-bottom:4px}
 .toolbar button.ghost{background:#e5e7eb;color:#1a1a2e}
 .filters{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;align-items:center}
 .filters input,.filters select{padding:8px 12px;border:1px solid #d1d5db;border-radius:6px;font-size:14px;background:white;color:#1a1a2e}
-.filters input{width:160px}
+.filters input{width:140px}
 .filters input.search{width:220px}
 .filters select{min-width:150px}
 .filters button{padding:8px 16px;background:#16213e;color:white;border:none;border-radius:6px;font-size:14px;cursor:pointer}
@@ -37,8 +37,6 @@ td.author{color:#6b7280;font-size:13px;white-space:nowrap}
 td.date{white-space:nowrap;color:#6b7280;font-size:13px}
 td.scenario,td.why{max-width:300px}
 .empty{text-align:center;padding:48px;color:#9ca3af;font-size:15px}
-a{color:#16213e;text-decoration:none;font-size:14px;font-weight:500}
-a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -71,7 +69,8 @@ a:hover{text-decoration:underline}
     <option value="Permissionset">Permissionset</option>
     <option value="Requestpage">Requestpage</option>
   </select>
-  <input type="text" id="filter-pr" placeholder="PR number (e.g. 7)">
+  <input type="text" id="filter-pr" placeholder="PR number">
+  <input type="text" id="filter-author" placeholder="Author">
   <input type="text" id="filter-search" class="search" placeholder="Search VAT, invoice, posting...">
   <input type="date" id="filter-date-from" placeholder="Start date">
   <input type="date" id="filter-date-to" placeholder="End date">
@@ -87,6 +86,12 @@ a:hover{text-decoration:underline}
 
 var typeOrder = ['Codeunit','Table','Page','Report','Xmlport','Enum','Interface','Query','Extension','Controladdin','Dotnet','Profile','Entitlement','Permissionset','Requestpage'];
 var cachedData = [];
+
+function capitalizeFirst(str){
+  return str.replace(/^([a-zA-Z]+)/, function(m){
+    return m.charAt(0).toUpperCase() + m.slice(1).toLowerCase();
+  });
+}
 
 function normalizeObject(objName){
   return objName
@@ -111,6 +116,7 @@ function sortByType(a,b){
 function getFiltered(){
   var typeFilter = document.getElementById('filter-type').value.toLowerCase();
   var prFilter = document.getElementById('filter-pr').value.trim();
+  var authorFilter = document.getElementById('filter-author').value.trim().toLowerCase();
   var searchFilter = document.getElementById('filter-search').value.trim().toLowerCase();
   var dateFrom = document.getElementById('filter-date-from').value;
   var dateTo = document.getElementById('filter-date-to').value;
@@ -120,6 +126,7 @@ function getFiltered(){
     var normType = getType(normObj).toLowerCase();
     if (typeFilter && normType !== typeFilter) return false;
     if (prFilter && e.pr !== parseInt(prFilter,10)) return false;
+    if (authorFilter && (e.author||'').toLowerCase().indexOf(authorFilter) === -1) return false;
     if (dateFrom && e.date.slice(0,10) < dateFrom) return false;
     if (dateTo && e.date.slice(0,10) > dateTo) return false;
     if (searchFilter) {
@@ -180,7 +187,7 @@ window.render = async function(){
     if (!groups[normKey]) groups[normKey] = [];
     groups[normKey].push(e);
     if (!displayNames[normKey] || e.object.length > displayNames[normKey].length) {
-      displayNames[normKey] = e.object;
+      displayNames[normKey] = capitalizeFirst(e.object);
     }
   });
 
@@ -237,14 +244,15 @@ window.render = async function(){
 window.clearFilters = function(){
   document.getElementById('filter-type').value = '';
   document.getElementById('filter-pr').value = '';
+  document.getElementById('filter-author').value = '';
   document.getElementById('filter-search').value = '';
   document.getElementById('filter-date-from').value = '';
   document.getElementById('filter-date-to').value = '';
   window.render();
 };
 
-// Live filtering for dropdown + search; Apply button for dates + PR number
 document.getElementById('filter-type').addEventListener('change', window.render);
+document.getElementById('filter-author').addEventListener('input', window.render);
 document.getElementById('filter-search').addEventListener('input', window.render);
 document.getElementById('btn-apply').addEventListener('click', window.render);
 document.getElementById('btn-clear').addEventListener('click', window.clearFilters);
