@@ -263,7 +263,7 @@ document.getElementById('btn-expand-all').addEventListener('click', window.expan
 document.getElementById('btn-collapse-all').addEventListener('click', window.collapseAll);
 document.getElementById('btn-export-csv').addEventListener('click', window.exportCSV);
 
-window.addEventListener("load", window.render);
+if (document.readyState === "complete") { window.render(); } else { window.addEventListener("load", window.render); }
 
 })();
 </script>
