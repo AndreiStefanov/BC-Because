@@ -161,7 +161,7 @@ function sortByType(a, b) {
 }
 ​
 async function render() {
-  const res = await fetch('tracker/history.json');
+  const res = await fetch('history.json');
   const data = await res.json();
 ​
   const typeFilter = document.getElementById('filter-type').value.toLowerCase();
